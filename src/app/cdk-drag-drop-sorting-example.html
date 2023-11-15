@@ -1,0 +1,60 @@
+<h3>Job Building</h3>
+<div>
+  <button mat-raised-button (click)="AddJob()">Add Job</button>
+</div>
+<div
+  *ngIf="jobList"
+  class="example-list"
+  cdkDropList
+  #inProgress="cdkDropList"
+  [cdkDropListData]="jobList"
+  (cdkDropListDropped)="dropJob($event)"
+>
+  <div *ngFor="let item of jobList" class="example-box" cdkDrag>
+    {{item.name}}
+  </div>
+</div>
+
+<div
+  cdkDropList
+  class="example-list"
+  [cdkDropListData]="positions"
+  (cdkDropListDropped)="drop($event)"
+>
+  <div
+    class="example-box"
+    *ngFor="let position of positions; index as i"
+    cdkDrag
+  >
+    <div class="drag-index">{{i}}</div>
+    <div class="w-100 drag-content">
+      <!-- <mat-checkbox (change)="position.isSelect = !position.isSelect"> {{position.name}}</mat-checkbox>   -->
+      <mat-checkbox (change)="onJobSelected(i)"
+        >{{ position.name }}</mat-checkbox
+      >
+    </div>
+  </div>
+</div>
+
+<button mat-icon-button (click)="onUpClick()">
+  <span class="material-icons">arrow_upward</span>
+</button>
+<br />
+<button mat-icon-button (click)="onDownClick()">
+  <span class="material-icons">arrow_downward</span>
+</button>
+
+<ng-template #openDialog>
+  <form class="example-form" #f="ngForm">
+    <mat-form-field class="example-full-width">
+      <mat-label>Add Job</mat-label>
+      <input
+        matInput
+        placeholder="job"
+        [(ngModel)]="jobTitle"
+        [ngModelOptions]="{standalone: true}"
+      />
+    </mat-form-field>
+    <button mat-raised-button (click)="save()">save</button>
+  </form>
+</ng-template>
