@@ -7,6 +7,7 @@
   background: white;
   border-radius: 4px;
   overflow: hidden;
+  cursor: move;
 }
 
 .example-box {
@@ -56,12 +57,39 @@
   width: 100%;
 }
 
-.drag-index{
+.drag-index {
   font-size: 16px;
   font-weight: 500;
   padding: 8px;
 }
 
-.drag-content{
+.drag-content {
   padding-left: 10px;
+}
+
+.btn-arrow {
+  float: right;
+  margin-top: -60px;
+}
+
+.header-text {
+  text-align: center;
+}
+
+.content-width {
+  width: 100% !important;
+}
+
+.btn-align {
+  float: right;
+  margin: 0 auto;
+  margin-bottom: 24px;
+}
+
+.btn-align-save{
+  float: right;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
 }

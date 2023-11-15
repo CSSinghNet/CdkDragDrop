@@ -1,7 +1,10 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
-import { moveItemsInArray } from './moveItemsInArray';
 
 /**
  * @title Drag&Drop sorting
@@ -33,6 +36,50 @@ export class CdkDragDropSortingExample {
       name: 'Position 4',
       isSelect: false,
     },
+    {
+      name: 'Position 5',
+      isSelect: false,
+    },
+    {
+      name: 'Position 6',
+      isSelect: false,
+    },
+    {
+      name: 'Position 7',
+      isSelect: false,
+    },
+    {
+      name: 'Position 8',
+      isSelect: false,
+    },
+    {
+      name: 'Position 9',
+      isSelect: false,
+    },
+    {
+      name: 'Position 10',
+      isSelect: false,
+    },
+    {
+      name: 'Position 11',
+      isSelect: false,
+    },
+    {
+      name: 'Position 12',
+      isSelect: false,
+    },
+    {
+      name: 'Position 13',
+      isSelect: false,
+    },
+    {
+      name: 'Position 14',
+      isSelect: false,
+    },
+    {
+      name: 'Position 15',
+      isSelect: false,
+    },
   ];
 
   @ViewChild('openDialog') openDialog: TemplateRef<any>;
@@ -44,13 +91,23 @@ export class CdkDragDropSortingExample {
   }
 
   dropJob(event: CdkDragDrop<any>) {
-    moveItemInArray(this.jobList, event.previousIndex, event.currentIndex);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
   }
   AddJob() {
-    const dialogRef = this.dialog.open(this.openDialog);
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
-    });
+    this.dialog.open(this.openDialog);
   }
 
   save() {
@@ -63,27 +120,41 @@ export class CdkDragDropSortingExample {
 
     this.jobTitle = '';
     this.dialog.closeAll();
-    console.log(this.jobList);
   }
 
-  onUpClick() {
-    console.log(this.jobList);
-    this.jobList = this.idxList.map((idx) => {
-      const selectedItem = this.positions[idx];
-      selectedItem.isSelect = !selectedItem.isSelect;
-      return selectedItem;
-    });
-
-    this.positions = this.positions.filter((obj) => !obj.isSelect);
+  onUpClick(jobIndex: number) {
+    this.processSelectedPositions(jobIndex);
   }
 
-  onDownClick() {}
+  onDownClick(jobIndex: number) {
+    this.processSelectedPositions(jobIndex);
+  }
 
-  onJobSelected(index: number): void {
-    this.idxList = this.idxList || []; // Ensure idxList is initialized
-    this.selectedJobIndex = index;
-    if (!this.idxList.includes(index)) {
-      this.idxList.push(index);
+  private processSelectedPositions(jobIndex: number) {
+    const isSelectPosition = this.positions.filter((x) => x.isSelect === true);
+    for (let idx of this.idxList) {
+      transferArrayItem(
+        isSelectPosition,
+        this.jobList[jobIndex].children,
+        idx,
+        idx
+      );
     }
+    this.positions = this.positions.filter((item) => item.isSelect !== true);
+  }
+
+  onJobSelected(): void {
+    // Get the index of the selected position
+    this.idxList = this.findSelectedIndex(this.positions);
+  }
+
+  findSelectedIndex(array: any[]) {
+    this.idxList = []; // Ensure idxList is initialized
+    array.forEach((position, index) => {
+      if (position.isSelect) {
+        this.idxList.push(index);
+      }
+    });
+    return this.idxList;
   }
 }
