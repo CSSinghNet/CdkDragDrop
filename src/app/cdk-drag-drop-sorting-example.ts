@@ -18,6 +18,7 @@ export class CdkDragDropSortingExample {
   selectedJobIndex: number;
   jobList: any[];
   idxList: any[];
+  ChildidxList: any[];
   positions = [
     {
       name: 'Position 1',
@@ -113,7 +114,7 @@ export class CdkDragDropSortingExample {
   save() {
     this.jobList = this.jobList || [];
     this.jobList.push({
-      name: this.jobTitle,
+      name: this.jobTitle.toLocaleUpperCase(),
       isSelect: false,
       children: [],
     });
@@ -146,6 +147,9 @@ export class CdkDragDropSortingExample {
   onJobSelected(): void {
     // Get the index of the selected position
     this.idxList = this.findSelectedIndex(this.positions);
+  }
+  onJobChildSelected(item:any[]){
+this.ChildidxList=this.findSelectedIndex(item);
   }
 
   findSelectedIndex(array: any[]) {
