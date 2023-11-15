@@ -6,7 +6,7 @@
 </div>
 
 <div cdkDropListGroup *ngIf="jobList">
-  <div
+  <div *ngIf="jobList.length !==0"
     cdkDropList
     [cdkDropListData]="jobList"
     class="example-list content-width"
@@ -18,7 +18,7 @@
       cdkDrag
     >
       <h3 class="header-text">{{d.name}}</h3>
-      <button
+      <!-- <button
         class="btn-arrow"
         mat-icon-button
         (click)="i === 0 ? onUpClick(0) : onDownClick(i)"
@@ -26,7 +26,32 @@
         <span class="material-icons"
           >{{ i === 0 ? 'arrow_upward' : 'arrow_downward' }}</span
         >
-      </button>
+      </button> -->
+
+      <button
+      class="btn-arrow btn-up"
+      mat-icon-button
+      (click)="onUpClick(i)"
+    >
+      <span class="material-icons"
+        >arrow_upward</span
+      >
+    </button>
+
+    <button
+    class="btn-arrow"
+    mat-icon-button
+    (click)="onDownClick(i)"
+  >
+    <span class="material-icons"
+      >arrow_downward</span
+    >
+  </button>
+      <div class="delete-icon">
+        <button mat-icon-button class="btn-arrow delete-btn" (click)="delete(i)">
+          <i class="material-icons">delete_outline</i>
+        </button>
+      </div>
       <div
         cdkDropList
         [cdkDropListData]="d.children"
@@ -38,7 +63,12 @@
           *ngFor="let item of d.children; index as i"
           cdkDrag
         >
-          {{item.name}}
+        <div class="w-100 drag-content">
+          <mat-checkbox (change)="onJobChildSelected(d.children)" [(ngModel)]="item.isSelect"
+            >{{item.name}}</mat-checkbox
+          >
+        </div>
+          
         </div>
       </div>
     </div>

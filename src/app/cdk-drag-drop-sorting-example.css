@@ -93,3 +93,13 @@
   margin-right: 10px;
   margin-top: 10px;
 }
+
+.delete-icon a{ cursor: pointer;}
+
+.delete-btn{
+  margin-right: 64px;
+}
+
+.btn-up{
+  margin-right:30px;
+}
