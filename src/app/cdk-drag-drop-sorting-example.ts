@@ -1,10 +1,12 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
+import { DragDropService } from './drag-drop-service';
+import { PositionService } from './position-service';
 
 /**
  * @title Drag&Drop sorting
@@ -14,98 +16,27 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: 'cdk-drag-drop-sorting-example.html',
   styleUrls: ['cdk-drag-drop-sorting-example.css'],
 })
-export class CdkDragDropSortingExample {
+export class CdkDragDropSortingExample  implements OnInit{
   selectedJobIndex: number;
-  jobList: any[];
+  jobList: any[]=[];
   idxList: number[]=[];
   ChildidxList: number[]=[];
-  positions = [
-    {
-      name: 'Position 1',
-      isSelect: false,
-    },
-
-    {
-      name: 'Position 2',
-      isSelect: false,
-    },
-    {
-      name: 'Position 3',
-      isSelect: false,
-    },
-    {
-      name: 'Position 4',
-      isSelect: false,
-    },
-    {
-      name: 'Position 5',
-      isSelect: false,
-    },
-    {
-      name: 'Position 6',
-      isSelect: false,
-    },
-    {
-      name: 'Position 7',
-      isSelect: false,
-    },
-    {
-      name: 'Position 8',
-      isSelect: false,
-    },
-    {
-      name: 'Position 9',
-      isSelect: false,
-    },
-    {
-      name: 'Position 10',
-      isSelect: false,
-    },
-    {
-      name: 'Position 11',
-      isSelect: false,
-    },
-    {
-      name: 'Position 12',
-      isSelect: false,
-    },
-    {
-      name: 'Position 13',
-      isSelect: false,
-    },
-    {
-      name: 'Position 14',
-      isSelect: false,
-    },
-    {
-      name: 'Position 15',
-      isSelect: false,
-    },
-  ];
+  positions :any[]= [];
 
   @ViewChild('openDialog') openDialog: TemplateRef<any>;
   jobTitle: string;
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog,private dragDropService:DragDropService, 
+    private positionService:PositionService) {}
 
+  ngOnInit() {
+    this.positions = this.positionService.getPositions();
+  }
   drop(event: CdkDragDrop<any>) {
-    moveItemInArray(this.positions, event.previousIndex, event.currentIndex);
+    this.dragDropService.drop(event);
   }
 
   dropJob(event: CdkDragDrop<any>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
+    this.dragDropService.dropJob(event);
   }
   AddJob() {
     this.dialog.open(this.openDialog);
@@ -131,7 +62,7 @@ export class CdkDragDropSortingExample {
     for(const idx of this.ChildidxList){
       transferArrayItem(this.jobList[jobIndex].children,this.positions, idx, idx);
     }
-    this.positions = this.updateObjectInArray(this.positions,'isSelect', false); 
+    this.positions = this.dragDropService.updateObjectInArray(this.positions,'isSelect', false); 
   }
 
   private processSelectedPositions(jobIndex: number) {
@@ -143,7 +74,7 @@ export class CdkDragDropSortingExample {
         idx,
         idx
         );
-      this.jobList = this.updateObjectInArray(this.jobList,'isSelect', false);       
+      this.jobList = this.dragDropService.updateObjectInArray(this.jobList,'isSelect', false);       
     }
     this.positions = this.positions.filter((position) => !position.isSelect);
   }
@@ -182,24 +113,4 @@ export class CdkDragDropSortingExample {
   delete(indextoDelete:number){
    this.jobList= this.jobList.filter((_, index) => index !== indextoDelete);
   }
-
-
- updateObjectInArray(array:any, keyToUpdate:string, newValue:boolean) {
-  return array.map((obj:any) => {
-      // Check if the object has a 'children' property
-      if (obj.children && Array.isArray(obj.children)) {
-          // If yes, update the nested object
-          obj.children = obj.children.map((nestedObj:any) => {
-              // If yes, create a new nested object with the updated key-value pair
-              return { ...nestedObj, [keyToUpdate]: newValue };
-          });
-      } else {
-          // If no 'children' property, update the object directly
-          return { ...obj, [keyToUpdate]: newValue };
-      }
-      // Return the original object (with or without changes)
-      return obj;
-  });
-}
-
 }
